@@ -10,13 +10,13 @@ export class UserService {
   }
 
   async mockGetUserByIdSuccess() {
-    return await this.request.get("http://localhost:8882/api/users/12", {
+    return await this.request.get("http://127.0.0.1:8882/api/users/12", {
       headers: { "x-api-key": "reqresfree-v1" },
     });
   }
 
   async mockGetUserByIdUnsuccess() {
-    return await this.request.get("http://localhost:8882/api/users/1234", {
+    return await this.request.get("http://127.0.0.1:8882/api/users/1234", {
       headers: { "x-api-key": "reqresfree-v1" },
     });
   }
