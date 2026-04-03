@@ -1,0 +1,44 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - type: ui
+          - type: api
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install dependencies
+      run: |
+        npm install
+        npx playwright install
+
+    - name: Run UI tests
+      if: matrix.type == 'ui'
+      run: npm run test-ui
+    - name: Run API tests
+      if: matrix.type == 'api'
+      run: npx start-server-and-test "npx stubby -d ./resources/2_api/mock-api.yaml --port 8882" http://localhost:8882 "npm run test-api"
+
+    - name: Upload Playwright Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: playwright-report
+        path: playwright-report
