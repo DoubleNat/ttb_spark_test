@@ -39,15 +39,7 @@ jobs:
         npx stubby -d ./resources/2_api/mock-api.yaml --port 8882 --host 127.0.0.1 --stubs-only &
         STUBBY_PID=$!
 
-        # Wait until endpoint ready (up to 10s)
-        for i in {1..10}; do
-          status=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8882/api/users/12 || echo 000)
-          echo "Checking stubby: $status"
-          if [ "$status" -eq 200 ]; then
-            break
-          fi
-          sleep 1
-        done
+        sleep 5
 
         # Run API test
         npm run test-api
