@@ -10,10 +10,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        type: [ui, api]
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -29,17 +25,16 @@ jobs:
         npx playwright install
 
     - name: Run UI tests
-      if: matrix.type == 'ui'
       run: npm run test-ui
 
     - name: Run API tests
-      if: matrix.type == 'api'
       run: |
         # Start stubby in background
         npx stubby -d ./resources/2_api/mock-api.yaml --port 8882 --host 127.0.0.1 --stubs-only &
         STUBBY_PID=$!
 
-        sleep 5
+        # รอ stubby เริ่มทำงาน (sleep 3 วินาที)
+        sleep 3
 
         # Run API test
         npm run test-api
@@ -50,5 +45,5 @@ jobs:
     - name: Upload Playwright Report
       uses: actions/upload-artifact@v4
       with:
-        name: playwright-report-${{matrix.type}}
+        name: playwright-report   # artifact name ไม่ซ้ำเพราะ job เดียว
         path: playwright-report
