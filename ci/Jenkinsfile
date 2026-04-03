@@ -1,0 +1,105 @@
+/*
+ * Test Automation Pipeline - UI & API Testing with Playwright & Stubby
+ *
+ * This Jenkins Pipeline automates the execution of automated UI and API tests
+ * using Node.js, Playwright, and Stubby (for mock APIs).
+ *
+ * Pipeline Stages:
+ * 1. Checkout Code           - Pull latest code from GitHub repository
+ * 2. Setup Node.js           - Install Node.js using NVM and verify versions
+ * 3. Install Dependencies    - Install npm packages and Playwright browsers
+ * 4. Run UI Tests            - Execute Playwright UI tests (npm run test-ui)
+ * 5. Run API Tests           - Start Stubby mock server, execute API tests, then stop server
+ * 6. Archive Playwright Report - Archive Playwright test reports for later inspection
+ *
+ * Environment Variables:
+ * - NODE_VERSION: Node.js version to install and use (default: 18)
+ *
+ * Notes:
+ * - Stubby runs on 127.0.0.1:8882 to serve mock API responses.
+ * - UI tests are run with Playwright, ensure browser binaries are installed.
+ * - Reports are archived under 'playwright-report/**' after test execution.
+ *
+ * Repository: <replace-with-your-repo-url>
+ */
+
+pipeline {
+    agent any
+
+    environment {
+        NODE_VERSION = '18'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                // Pull latest code from repository
+                checkout scm
+            }
+        }
+
+        stage('Setup Node.js') {
+            steps {
+                // Install Node.js using NVM and display versions
+                sh '''
+                curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.6/install.sh | bash
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                nvm install $NODE_VERSION
+                nvm use $NODE_VERSION
+                node -v
+                npm -v
+                '''
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                // Install npm packages and Playwright browsers
+                sh '''
+                npm install
+                npx playwright install
+                '''
+            }
+        }
+
+        stage('Run UI Tests') {
+            steps {
+                // Run UI automation tests with Playwright
+                sh 'npm run test-ui'
+            }
+        }
+
+        stage('Run API Tests') {
+            steps {
+                // Start Stubby mock server in background, run API tests, then stop Stubby
+                sh '''
+                npx stubby -d ./resources/2_api/mock-api.yaml --port 8882 --host 127.0.0.1 --stubs-only &
+                STUBBY_PID=$!
+
+                # Wait for Stubby to start
+                sleep 3
+
+                # Execute API tests
+                npm run test-api
+
+                # Stop Stubby server
+                kill $STUBBY_PID
+                '''
+            }
+        }
+
+        stage('Archive Playwright Report') {
+            steps {
+                // Archive Playwright HTML and XML reports
+                archiveArtifacts artifacts: 'playwright-report/**', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished.'
+        }
+    }
+}
