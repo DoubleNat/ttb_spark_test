@@ -35,7 +35,7 @@ jobs:
       run: npm run test-ui
     - name: Run API tests
       if: matrix.type == 'api'
-      run: npx start-server-and-test "npx stubby -d ./resources/2_api/mock-api.yaml --port 8882 --host 127.0.0.1 --stubs-only" http://127.0.0.1:8882/ "npm run test-api"
+      run: npx start-server-and-test "npx stubby -d ./resources/2_api/mock-api.yaml --port 8882 --host 127.0.0.1 --stubs-only" http://127.0.0.1:8882/api/users/12 "npm run test-api"
     - name: Upload Playwright Report
       uses: actions/upload-artifact@v4
       with:
