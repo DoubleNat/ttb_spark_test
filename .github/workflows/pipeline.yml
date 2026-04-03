@@ -50,5 +50,5 @@ jobs:
     - name: Upload Playwright Report
       uses: actions/upload-artifact@v4
       with:
-        name: playwright-report
+        name: playwright-report-${{matrix.type}}
         path: playwright-report
