@@ -1,0 +1,42 @@
+- request: 
+    method: GET
+    url: /api/users/1234
+    headers: 
+      x-api-key: "reqresfree-v1"
+  
+  response:
+    status: 404
+    headers:  
+      Content-Type: application/json
+    body: {}
+
+- request: 
+    method: GET
+    url: /api/users/12
+    headers: 
+      x-api-key: "reqresfree-v1"
+  
+  response:
+    status: 200
+    headers:  
+      Content-Type: application/json
+    body: >
+      {
+        "id" : 12,
+        "email": "rachel.howell@reqres.in",
+        "first_name": "Rachel",
+        "last_name": "Howell",
+        "avatar": "https://reqres.in/img/faces/12-image.jpg"
+      }
+
+- request: 
+    method: GET
+    url: /
+  
+  response:
+    status: 200
+    headers:  
+      Content-Type: application/json
+    body: {}
+      
+
