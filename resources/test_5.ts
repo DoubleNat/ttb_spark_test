@@ -1,14 +1,15 @@
 export function simpleCipher(encrypted: string, k: number): string {
-  const A_CODE = 65; // 'A'
+  const A_CODE = 65;
   const ALPHABET_SIZE = 26;
 
   return encrypted
     .split('')
     .map((char) => {
-      const code = char.charCodeAt(0) - A_CODE;
+      // ✅ ถ้าเป็น space → ไม่ต้องทำอะไร
+      if (char === ' ') return char;
 
-      // shift ย้อน + กันติดลบ
-      const shifted = (code - k % ALPHABET_SIZE + ALPHABET_SIZE) % ALPHABET_SIZE;
+      const code = char.charCodeAt(0) - A_CODE;
+      const shifted = (code - (k % ALPHABET_SIZE) + ALPHABET_SIZE) % ALPHABET_SIZE;
 
       return String.fromCharCode(shifted + A_CODE);
     })
