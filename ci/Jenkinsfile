@@ -10,7 +10,8 @@
  * 3. Install Dependencies    - Install npm packages and Playwright browsers
  * 4. Run UI Tests            - Execute Playwright UI tests (npm run test-ui)
  * 5. Run API Tests           - Start Stubby mock server, execute API tests, then stop server
- * 6. Archive Playwright Report - Archive Playwright test reports for later inspection
+ * 6. Run Function Tests      - Execute Playwright Function Tests (npm run test-function)
+ * 7. Archive Playwright Report - Archive Playwright test reports for later inspection
  *
  * Environment Variables:
  * - NODE_VERSION: Node.js version to install and use (default: 18)
@@ -86,6 +87,13 @@ pipeline {
                 # Stop Stubby server
                 kill $STUBBY_PID
                 '''
+            }
+        }
+
+        stage('Run Function Tests') {
+            steps {
+                // Run Function tests with Playwright
+                sh 'npm run test-function'
             }
         }
 
