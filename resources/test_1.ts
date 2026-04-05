@@ -1,4 +1,4 @@
-function findDuplicatesAndSort(listA: number[], listB: number[]): number[] {
+export function findDuplicatesAndSort(listA: number[], listB: number[]): number[] {
 
  // Find and Filter Duplicate Item
 
