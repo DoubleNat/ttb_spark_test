@@ -6,5 +6,5 @@ test("Test No.1: Find Duplicate and Sort", async () => {
     const listB = [1, 2, 3, 4, 7, 9];
    
     const duplicatedAndSortedList = findDuplicatesAndSort(listA,listB);
-    console.log("List: " + duplicatedAndSortedList);
+    console.log("Duplicate List: " + duplicatedAndSortedList);
 })
